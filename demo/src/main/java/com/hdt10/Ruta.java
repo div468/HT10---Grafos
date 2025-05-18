@@ -15,16 +15,33 @@ package com.hdt10;
 import java.util.List;
 
 public class Ruta {
-    private final List<String> camino;
-    private final double costo;
-
-    public Ruta(List<String> camino, double costo) {
+    private List<String> camino;
+    private double tiempo;
+    
+    public Ruta(List<String> camino, double tiempo) {
         this.camino = camino;
-        this.costo = costo;
+        this.tiempo = tiempo;
     }
-
-    public void imprimirRuta() {
-        System.out.println("Ruta: " + String.join(" -> ", camino));
-        System.out.printf("Costo total: %.2f horas\n", costo);
+    
+    public List<String> getCamino() {
+        return camino;
+    }
+    
+    public double getTiempo() {
+        return tiempo;
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Ruta: ");
+        for (int i = 0; i < camino.size(); i++) {
+            sb.append(camino.get(i));
+            if (i < camino.size() - 1) {
+                sb.append(" -> ");
+            }
+        }
+        sb.append("\nTiempo: ").append(String.format("%.2f", tiempo));
+        return sb.toString();
     }
 }
