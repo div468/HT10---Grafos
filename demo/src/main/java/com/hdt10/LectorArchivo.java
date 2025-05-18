@@ -2,67 +2,80 @@
  * Universidad del Valle de Guatemala
  * Algoritmos y Estructuras de Datos
  * Ing. Douglas Barrios
- * @author: Marcelo Detlefsen, Julián Divas
  * Creación: 17/05/2025
  * última modificación: 17/05/2025
  * File Name: LectorArchivo.java
- * Descripción: Clase que se encarga de leer un archivo de texto con información de ciudades y conexiones.
- * Formato del archivo:
- * Ciudad1 Ciudad2 tiempoNormal tiempoLluvia tiempoNieve tiempoTormenta
+ * Descripción: Clase para leer archivos de conexiones entre ciudades
+ * y cargarlos en el grafo.
  */
 
 package com.hdt10;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
 public class LectorArchivo {
     
     /**
-     * Lee un archivo de texto con información de ciudades y sus conexiones
-     * @param rutaArchivo Ruta del archivo a leer
+     * Lee un archivo de conexiones y carga los datos en el grafo
+     * Formato del archivo:
+     * Ciudad1 Ciudad2 tiempoNormal tiempoLluvia tiempoNieve tiempoTormenta
+     * 
+     * @param nombreArchivo Ruta del archivo a leer
      * @param grafo Grafo donde se cargarán los datos
      * @return true si la lectura fue exitosa, false en caso contrario
      */
-    public static boolean cargarDesdeArchivo(String rutaArchivo, Grafo grafo) {
-        try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
+    public static boolean cargarConexiones(String nombreArchivo, Grafo grafo) {
+        File archivo = new File(nombreArchivo);
+        if (!archivo.exists() || !archivo.isFile()) {
+            System.out.println("Error: El archivo " + nombreArchivo + " no existe o no es un archivo válido.");
+            return false;
+        }
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
             String linea;
+            int numeroLinea = 0;
+            
             while ((linea = br.readLine()) != null) {
-                // Ignorar líneas vacías
-                if (linea.trim().isEmpty()) {
+                numeroLinea++;
+                // Omitir líneas vacías o comentarios
+                if (linea.trim().isEmpty() || linea.trim().startsWith("#")) {
                     continue;
                 }
                 
-                // Dividir la línea en tokens
-                String[] tokens = linea.trim().split("\\s+");
+                // Dividir la línea en partes separadas por espacios
+                String[] partes = linea.trim().split("\\s+");
                 
-                // Verificar que hay suficientes tokens
-                if (tokens.length < 6) {
-                    System.err.println("Error: Formato de línea incorrecto: " + linea);
+                // Verificar que tenga el formato correcto
+                if (partes.length < 6) {
+                    System.out.println("Error en línea " + numeroLinea + ": formato incorrecto. Se esperan al menos 6 valores.");
                     continue;
                 }
                 
                 try {
-                    // Extraer información
-                    String ciudad1 = tokens[0];
-                    String ciudad2 = tokens[1];
-                    double tiempoNormal = Double.parseDouble(tokens[2]);
-                    double tiempoLluvia = Double.parseDouble(tokens[3]);
-                    double tiempoNieve = Double.parseDouble(tokens[4]);
-                    double tiempoTormenta = Double.parseDouble(tokens[5]);
+                    String ciudad1 = partes[0];
+                    String ciudad2 = partes[1];
+                    double tiempoNormal = Double.parseDouble(partes[2]);
+                    double tiempoLluvia = Double.parseDouble(partes[3]);
+                    double tiempoNieve = Double.parseDouble(partes[4]);
+                    double tiempoTormenta = Double.parseDouble(partes[5]);
                     
                     // Agregar la conexión al grafo
                     grafo.agregarConexion(ciudad1, ciudad2, tiempoNormal, tiempoLluvia, tiempoNieve, tiempoTormenta);
                     
-                    System.out.println("Conexión agregada: " + ciudad1 + " -> " + ciudad2);
                 } catch (NumberFormatException e) {
-                    System.err.println("Error: Formato numérico incorrecto en línea: " + linea);
+                    System.out.println("Error en línea " + numeroLinea + ": formato de número incorrecto.");
                 }
             }
+            
+            // Ejecutar el algoritmo de Floyd-Warshall después de cargar todas las conexiones
+            grafo.floyd();
             return true;
+            
         } catch (IOException e) {
-            System.err.println("Error al leer el archivo: " + e.getMessage());
+            System.out.println("Error al leer el archivo: " + e.getMessage());
             return false;
         }
     }
