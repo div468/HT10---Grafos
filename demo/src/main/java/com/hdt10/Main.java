@@ -3,7 +3,7 @@
  * Algoritmos y Estructuras de Datos
  * Ing. Douglas Barrios
  * Creación: 17/05/2025
- * última modificación: 17/05/2025
+ * última modificación: 18/05/2025
  * File Name: Main.java
  * Descripción: Clase principal que implementa la interfaz del usuario
  * y coordina las operaciones del grafo.
@@ -11,6 +11,7 @@
 
 package com.hdt10;
 
+import java.io.File;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -26,11 +27,23 @@ public class Main {
         grafo = new Grafo(20);
         
         // Cargar las conexiones desde el archivo
-        System.out.print("Ingrese la ruta del archivo de conexiones (por defecto 'resources/conexiones.txt'): ");
+        System.out.print("Ingrese la ruta del archivo de conexiones (por defecto 'conexiones.txt'): ");
         String rutaArchivo = scanner.nextLine().trim();
         
         if (rutaArchivo.isEmpty()) {
-            rutaArchivo = "resources/conexiones.txt";
+            rutaArchivo = "conexiones.txt";
+        }
+        
+        System.out.println("Buscando archivo en: " + rutaArchivo);
+        
+        // Verificar si el archivo existe, si no, crear uno de ejemplo
+        File archivo = new File(rutaArchivo);
+        if (!archivo.exists() || !archivo.isFile()) {
+            System.out.println("No se encontró el archivo. Se creará un archivo de ejemplo.");
+            if (!CreadorArchivo.crearArchivoEjemplo(rutaArchivo)) {
+                System.out.println("Error al crear el archivo de ejemplo. El programa finalizará.");
+                return;
+            }
         }
         
         if (LectorArchivo.cargarConexiones(rutaArchivo, grafo)) {
@@ -134,8 +147,8 @@ public class Main {
         do {
             System.out.println("\nModificar Grafo");
             System.out.println("==============");
-            System.out.println("1. Interrumpir tráfico entre ciudades");
-            System.out.println("2. Establecer nueva conexión entre ciudades");
+            System.out.println("1. Establecer nueva conexión entre ciudades");
+            System.out.println("2. Eliminar conexión entre ciudades");
             System.out.println("3. Cambiar condición climática");
             System.out.println("4. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
@@ -148,10 +161,10 @@ public class Main {
             
             switch (opcion) {
                 case 1:
-                    interrumpirTrafico();
+                    establecerConexion();
                     break;
                 case 2:
-                    establecerConexion();
+                    eliminarConexion();
                     break;
                 case 3:
                     cambiarClima();
@@ -166,9 +179,9 @@ public class Main {
         } while (opcion != 4);
     }
     
-    private static void interrumpirTrafico() {
-        System.out.println("\nInterrumpir Tráfico");
-        System.out.println("==================");
+    private static void eliminarConexion() {
+        System.out.println("\nEliminar Conexión");
+        System.out.println("================");
         
         // Mostrar ciudades disponibles
         mostrarCiudadesDisponibles();
@@ -190,7 +203,7 @@ public class Main {
         }
         
         grafo.eliminarConexion(origen, destino);
-        System.out.println("Se ha interrumpido el tráfico entre " + origen + " y " + destino + ".");
+        System.out.println("Se ha eliminado la conexión entre " + origen + " y " + destino + ".");
         
         // Recalcular rutas
         grafo.floyd();
