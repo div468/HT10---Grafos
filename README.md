@@ -26,7 +26,7 @@ El centro representa la ciudad más accesible desde cualquier punto del grafo, c
 1. Clonar el repositorio:
     ```bash
     git clone https://github.com/div468/HT10---Grafos.git
-    cd HDT8
+    cd cd HT10---Grafos
     ```
 
 2. Compilar el programa:
