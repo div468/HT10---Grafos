@@ -6,7 +6,7 @@
  * última modificación: 17/05/2025
  * File Name: LectorArchivo.java
  * Descripción: Clase para leer archivos de conexiones entre ciudades
- * y cargarlos en el grafo.
+ *              y cargarlos en el grafo.
  */
 
 package com.hdt10;

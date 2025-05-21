@@ -6,7 +6,7 @@
  * última modificación: 18/05/2025
  * File Name: Main.java
  * Descripción: Clase principal que implementa la interfaz del usuario
- * y coordina las operaciones del grafo.
+ *              y coordina las operaciones del grafo.
  */
 
 package com.hdt10;
@@ -20,8 +20,7 @@ public class Main {
     private static Grafo grafo;
     
     public static void main(String[] args) {
-        System.out.println("Sistema de Rutas entre Ciudades");
-        System.out.println("==============================");
+        System.out.println("----- Sistema de Rutas entre Ciudades -----");
         
         // Inicializar el grafo con una capacidad inicial de 20 ciudades
         grafo = new Grafo(20);
@@ -36,7 +35,7 @@ public class Main {
         
         System.out.println("Buscando archivo en: " + rutaArchivo);
         
-        // Verificar si el archivo existe, si no, crear uno de ejemplo
+        // Verificar si el archivo existe, de lo contrario se crea uno de ejemplo
         File archivo = new File(rutaArchivo);
         if (!archivo.exists() || !archivo.isFile()) {
             System.out.println("No se encontró el archivo. Se creará un archivo de ejemplo.");
@@ -66,8 +65,7 @@ public class Main {
         int opcion;
         
         do {
-            System.out.println("\nMenú Principal");
-            System.out.println("=============");
+            System.out.println("\n----- Menú Principal -----");
             System.out.println("1. Consultar ruta entre dos ciudades");
             System.out.println("2. Consultar centro del grafo");
             System.out.println("3. Modificar grafo");
@@ -77,7 +75,7 @@ public class Main {
             try {
                 opcion = Integer.parseInt(scanner.nextLine().trim());
             } catch (NumberFormatException e) {
-                opcion = 0; // Opción inválida
+                opcion = 0;
             }
             
             switch (opcion) {
@@ -101,8 +99,7 @@ public class Main {
     }
     
     private static void consultarRuta() {
-        System.out.println("\nConsulta de Ruta");
-        System.out.println("===============");
+        System.out.println("\n----- Consulta de Ruta -----");
         
         // Mostrar ciudades disponibles
         mostrarCiudadesDisponibles();
@@ -134,8 +131,7 @@ public class Main {
     }
     
     private static void consultarCentro() {
-        System.out.println("\nCentro del Grafo");
-        System.out.println("===============");
+        System.out.println("\n----- Centro del Grafo -----");
         
         String centro = grafo.obtenerCentro();
         System.out.println("La ciudad que se encuentra en el centro del grafo es: " + centro);
@@ -145,8 +141,7 @@ public class Main {
         int opcion;
         
         do {
-            System.out.println("\nModificar Grafo");
-            System.out.println("==============");
+            System.out.println("\n----- Modificar Grafo -----");
             System.out.println("1. Establecer nueva conexión entre ciudades");
             System.out.println("2. Eliminar conexión entre ciudades");
             System.out.println("3. Cambiar condición climática");
@@ -156,7 +151,7 @@ public class Main {
             try {
                 opcion = Integer.parseInt(scanner.nextLine().trim());
             } catch (NumberFormatException e) {
-                opcion = 0; // Opción inválida
+                opcion = 0;
             }
             
             switch (opcion) {
@@ -180,8 +175,7 @@ public class Main {
     }
     
     private static void eliminarConexion() {
-        System.out.println("\nEliminar Conexión");
-        System.out.println("================");
+        System.out.println("\n------ Eliminar Conexión -----");
         
         // Mostrar ciudades disponibles
         mostrarCiudadesDisponibles();
@@ -216,8 +210,7 @@ public class Main {
     }
     
     private static void establecerConexion() {
-        System.out.println("\nEstablecer Conexión");
-        System.out.println("==================");
+        System.out.println("\n----- Establecer Conexión -----");
         
         // Mostrar ciudades existentes o permitir agregar nuevas
         mostrarCiudadesDisponibles();
@@ -260,8 +253,7 @@ public class Main {
     }
     
     private static void cambiarClima() {
-        System.out.println("\nCambiar Condición Climática");
-        System.out.println("==========================");
+        System.out.println("\n----- Cambiar Condición Climática -----");
         System.out.println("Condición climática actual: " + grafo.getCondicionActual());
         System.out.println("1. NORMAL");
         System.out.println("2. LLUVIA");

@@ -7,7 +7,7 @@
  * última modificación: 17/05/2025
  * File Name: Ruta.java
  * Descripción: Clase que representa una ruta entre dos ciudades en un grafo dirigido con pesos.
- * Esta clase almacena el camino y el costo total de la ruta.
+ *              Esta clase almacena el camino y el costo total de la ruta.
  */
 
 package com.hdt10;

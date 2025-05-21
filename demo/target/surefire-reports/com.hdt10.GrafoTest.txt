@@ -1,0 +1,28 @@
+-------------------------------------------------------------------------------
+Test set: com.hdt10.GrafoTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 4, Errors: 2, Skipped: 0, Time elapsed: 0.043 s <<< FAILURE! - in com.hdt10.GrafoTest
+testAgregarConexion  Time elapsed: 0.021 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at com.hdt10.GrafoTest.testAgregarConexion(GrafoTest.java:98)
+
+testObtenerRuta  Time elapsed: 0 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: not <null>
+	at com.hdt10.GrafoTest.testObtenerRuta(GrafoTest.java:148)
+
+testAgregarCiudad  Time elapsed: 0.001 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at com.hdt10.GrafoTest.testAgregarCiudad(GrafoTest.java:84)
+
+testFloydWarshall  Time elapsed: 0.002 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "com.hdt10.Ruta.getTiempo()" because "rutaAC" is null
+	at com.hdt10.GrafoTest.testFloydWarshall(GrafoTest.java:196)
+
+testCambiarCondicionClimatica  Time elapsed: 0.001 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "com.hdt10.Ruta.getTiempo()" because "rutaLluvia" is null
+	at com.hdt10.GrafoTest.testCambiarCondicionClimatica(GrafoTest.java:135)
+
+testEliminarConexion  Time elapsed: 0.001 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: not <null>
+	at com.hdt10.GrafoTest.testEliminarConexion(GrafoTest.java:114)
+
