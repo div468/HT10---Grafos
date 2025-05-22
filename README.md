@@ -48,10 +48,13 @@ Para la implementación del algoritmo del centro del grafo y Floyd se trabajó c
     '''bash
     pip 
     install networkx numpy
+    '''
+
 2. Ejecutar el programa de Python
     '''bash
     python Grafo.py
     '''
+    
 # 📚 Contenido de "conexiones.txt"
 Este es el contenido de las conexiones establecidas por defecto.
 ```lisp
