@@ -75,7 +75,7 @@ public class Grafo {
         }
     }
     
-    private void redimensionarMatrices(int nuevaCapacidad) {
+    private void redimensionarMatrices(int nuevaCapacidad)   {
         double[][] nuevaMatrizNormal = new double[nuevaCapacidad][nuevaCapacidad];
         double[][] nuevaMatrizLluvia = new double[nuevaCapacidad][nuevaCapacidad];
         double[][] nuevaMatrizNieve = new double[nuevaCapacidad][nuevaCapacidad];
@@ -163,7 +163,6 @@ public class Grafo {
 
     public void floyd() {
         int n = ciudades.size();
-        
         // Resetear la matriz next
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -174,7 +173,6 @@ public class Grafo {
                 }
             }
         }
-        
         // Algoritmo de Floyd-Warshall
         for (int k = 0; k < n; k++)
             for (int i = 0; i < n; i++)
@@ -206,22 +204,28 @@ public class Grafo {
 
     public String obtenerCentro() {
         int centro = -1;
-        double menorExcentricidad = INF;
+        double menorExcentricidad = Double.POSITIVE_INFINITY;
         
         for (int i = 0; i < ciudades.size(); i++) {
-            double max = 0;
-            for (int j = 0; j < ciudades.size(); j++)
-                if (i != j && matrizActual[i][j] > max && matrizActual[i][j] != INF)
-                    max = matrizActual[i][j];
+            double excentricidad = 0;
+            boolean esValido = true;
             
-            if (max < menorExcentricidad && max > 0) {
-                menorExcentricidad = max;
+            for (int j = 0; j < ciudades.size(); j++) {
+                if (i == j) continue;
+                if (matrizActual[i][j] == INF) {
+                    esValido = false;
+                    break;
+                }
+                excentricidad = Math.max(excentricidad, matrizActual[i][j]);
+            }
+            
+            if (esValido && excentricidad < menorExcentricidad) {
+                menorExcentricidad = excentricidad;
                 centro = i;
             }
         }
         
-        if (centro == -1) return "No se pudo determinar el centro";
-        return nombresCiudades.get(centro);
+        return (centro == -1) ? "No hay centro" : nombresCiudades.get(centro);
     }
 
     public void imprimirMatriz() {

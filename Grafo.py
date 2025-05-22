@@ -3,7 +3,7 @@ import networkx as nx
 import numpy as np
 import os
 """
- Universidad del Valle de Guatemala
+Universidad del Valle de Guatemala
 Algoritmos y Estructuras de Datos
 Ing. Douglas Barrios
 @author: Marcelo Detlefsen, Julián Divas

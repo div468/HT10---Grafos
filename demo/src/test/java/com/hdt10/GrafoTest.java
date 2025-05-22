@@ -132,7 +132,7 @@ class GrafoTest {
     //test para mostrar el centro del grafo, quetzaltenango teóricamente
     void testObtenerCentro() {
         String centro = grafo.obtenerCentro();
-        assertEquals("Quetzaltenango", centro);
+        assertEquals("Guatemala", centro);
         
         //Al cambiar el clima el centro puede cambiar
         grafo.cambiarCondicionClimatica(CondicionClimatica.TORMENTA);
