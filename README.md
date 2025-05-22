@@ -43,7 +43,7 @@ Para la implementación del algoritmo del centro del grafo y Floyd se trabajó c
     cd out
     java com.hdt10.Main
     ```
-# 🛠️ Instalación y Ejecución en Java
+# 🛠️ Instalación y Ejecución en Python
 1. Instalar las dependencias necesarias
     '''
     pip 
