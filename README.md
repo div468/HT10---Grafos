@@ -22,7 +22,10 @@ El proceso incluye:
    - Seleccionar la ciudad que minimiza esta distancia máxima
 El centro representa la ciudad más accesible desde cualquier punto del grafo, considerando las condiciones climáticas actuales.
 
-# 🛠️ Instalación y Ejecución
+## NetworkX
+Para la implementación del algoritmo del centro del grafo y Floyd se trabajó con el módulo NetworkX, una biblioteca de Python utilizada para el estudio de grados y análisis de redes.
+
+# 🛠️ Instalación y Ejecución en Java
 1. Clonar el repositorio:
     ```bash
     git clone https://github.com/div468/HT10---Grafos.git
@@ -40,7 +43,15 @@ El centro representa la ciudad más accesible desde cualquier punto del grafo, c
     cd out
     java com.hdt10.Main
     ```
-
+# 🛠️ Instalación y Ejecución en Java
+1. Instalar las dependencias necesarias
+    '''
+    pip 
+    install networkx numpy
+2. Ejecutar el programa de Python
+    '''
+    python Grafo.py
+    '''
 # 📚 Contenido de "conexiones.txt"
 Este es el contenido de las conexiones establecidas por defecto.
 ```lisp

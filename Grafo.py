@@ -98,22 +98,29 @@ def reconstruir_ruta(origen_id, destino_id, nodo_siguiente, ciudades):
 
 #Para indicar el centro del grafo
 def calcular_centro_grafo(ciudades, dist):
-    #Se cuentan las ciudades existentes
     n = len(ciudades)
-    #Para almacenar y comparar las excentricidades de cada nodo
     excentricidades = []
-    for j in range(n): # Para cada destino (columnas)
+    for i in range(n):  # Para cada ciudad
         max_dist = 0
-        for i in range(n): # Para cada origen (filas)
-            #Si existe camino de i a j y la distancia sea mayor al max_dist actual
-            if dist[i][j] != np.inf and dist[i][j] > max_dist:
-                #Se actualiza el máximo
+        puede_alcanzar_todos = True
+        for j in range(n):  # Para cada destino
+            if i == j:
+                continue
+            if dist[i][j] == np.inf:
+                puede_alcanzar_todos = False
+                break
+            if dist[i][j] > max_dist:
                 max_dist = dist[i][j]
-        #Guarda la maxima distancia en excentricidades
-        excentricidades.append(max_dist if max_dist != 0 else np.inf)
-    #Se devuelve el índice del valor con excentricidad mínima
+        
+        if puede_alcanzar_todos:
+            excentricidades.append(max_dist)
+        else:
+            excentricidades.append(np.inf)
+    
+    if all(e == np.inf for e in excentricidades):
+        return "No hay centro", np.inf
+    
     id_centro = np.argmin(excentricidades)
-    #Devuelve una tupla con el nombre de la ciudad y su excentricidad
     return ciudades[id_centro], excentricidades[id_centro]
 
 #Muestra las rutas con los climas que poseen en ese momento
