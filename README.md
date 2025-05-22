@@ -79,6 +79,8 @@ LaHabana --------> CiudadDeMexico
 CiudadDeMexico --> Monterrey
 Monterrey -------> Dallas
 ```
+# 💡 Diagrama UML de Clases
+![alt text](image.png)
 
 # Autores
 👨‍💻 Marcelo Detlefsen
