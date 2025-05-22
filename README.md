@@ -45,11 +45,11 @@ Para la implementación del algoritmo del centro del grafo y Floyd se trabajó c
     ```
 # 🐍 Instalación y Ejecución en Python
 1. Instalar las dependencias necesarias
-    '''
+    '''bash
     pip 
     install networkx numpy
 2. Ejecutar el programa de Python
-    '''
+    '''bash
     python Grafo.py
     '''
 # 📚 Contenido de "conexiones.txt"
