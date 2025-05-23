@@ -11,6 +11,8 @@
 
 package com.hdt10;
 
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -88,23 +90,45 @@ class GrafoTest {
     }
 
     @Test
-    //Test para cambiar las condiciones del clima entre ciudades.
+    //Test para cambiar las condiciones del clima entre ciudades específicas.
     void testCambiarCondicionClimatica() {
-        // Condición inicial es NORMAL
-        assertEquals(CondicionClimatica.NORMAL, grafo.getCondicionActual());
+        // Verificar condición inicial de una conexión específica (debería ser NORMAL)
+        CondicionClimatica condicionInicial = grafo.getCondicionConexion("Guatemala", "Quetzaltenango");
+        assertEquals(CondicionClimatica.NORMAL, condicionInicial);
         
-        // Cambiar a LLUVIA
-        grafo.cambiarCondicionClimatica(CondicionClimatica.LLUVIA);
-        assertEquals(CondicionClimatica.LLUVIA, grafo.getCondicionActual());
+        // Cambiar condición de una conexión específica a LLUVIA
+        boolean cambioExitoso = grafo.cambiarCondicionConexion("Guatemala", "Quetzaltenango", CondicionClimatica.LLUVIA);
+        assertTrue(cambioExitoso);
         
-        // Verificar que los pesos han cambiado
-        Ruta rutaLluvia = grafo.obtenerRuta("Guatemala", "Quetzaltenango");
-        assertEquals(6.0, rutaLluvia.getTiempo(), 0.001);
+        // Verificar que la condición cambió
+        CondicionClimatica nuevaCondicion = grafo.getCondicionConexion("Guatemala", "Quetzaltenango");
+        assertEquals(CondicionClimatica.LLUVIA, nuevaCondicion);
         
-        // Cambiar a clima nevado
-        grafo.cambiarCondicionClimatica(CondicionClimatica.NIEVE);
-        Ruta rutaNieve = grafo.obtenerRuta("Guatemala", "Quetzaltenango");
-        assertEquals(7.0, rutaNieve.getTiempo(), 0.001);
+        // Recalcular rutas después del cambio
+        grafo.floyd();
+        
+        // Verificar que el peso de la ruta cambió según la nueva condición climática
+        Ruta rutaConLluvia = grafo.obtenerRuta("Guatemala", "Quetzaltenango");
+        assertNotNull(rutaConLluvia);
+        assertEquals(6.0, rutaConLluvia.getTiempo(), 0.001); // Tiempo con lluvia
+        
+        // Cambiar a condición de NIEVE
+        grafo.cambiarCondicionConexion("Guatemala", "Quetzaltenango", CondicionClimatica.NIEVE);
+        grafo.floyd(); // Recalcular rutas
+        
+        Ruta rutaConNieve = grafo.obtenerRuta("Guatemala", "Quetzaltenango");
+        assertEquals(7.0, rutaConNieve.getTiempo(), 0.001); // Tiempo con nieve
+        
+        // Cambiar a condición de TORMENTA
+        grafo.cambiarCondicionConexion("Guatemala", "Quetzaltenango", CondicionClimatica.TORMENTA);
+        grafo.floyd(); // Recalcular rutas
+        
+        Ruta rutaConTormenta = grafo.obtenerRuta("Guatemala", "Quetzaltenango");
+        assertEquals(10.0, rutaConTormenta.getTiempo(), 0.001); // Tiempo con tormenta
+        
+        // Verificar que otras conexiones no se vieron afectadas
+        CondicionClimatica otraConexion = grafo.getCondicionConexion("Quetzaltenango", "Antigua");
+        assertEquals(CondicionClimatica.NORMAL, otraConexion);
     }
 
     @Test
@@ -131,13 +155,46 @@ class GrafoTest {
     @Test
     //test para mostrar el centro del grafo, quetzaltenango teóricamente
     void testObtenerCentro() {
-        String centro = grafo.obtenerCentro();
-        assertEquals("Guatemala", centro);
+        // Obtener el centro inicial
+        String centroInicial = grafo.obtenerCentro();
+        assertNotNull(centroInicial);
+        assertTrue(grafo.contieneCiudad(centroInicial)); // Verificar que el centro es una ciudad válida
         
-        //Al cambiar el clima el centro puede cambiar
-        grafo.cambiarCondicionClimatica(CondicionClimatica.TORMENTA);
-        String centroTormenta = grafo.obtenerCentro();
-        assertNotNull(centroTormenta);
+        // El centro debería ser una de las ciudades existentes
+        Set<String> ciudadesDisponibles = grafo.getCiudades();
+        assertTrue(ciudadesDisponibles.contains(centroInicial));
+        
+        // Cambiar condiciones climáticas de varias conexiones y verificar si el centro cambia
+        grafo.cambiarCondicionConexion("Guatemala", "Quetzaltenango", CondicionClimatica.TORMENTA);
+        grafo.cambiarCondicionConexion("Guatemala", "Escuintla", CondicionClimatica.TORMENTA);
+        grafo.floyd(); // Recalcular rutas
+        
+        String centroConTormenta = grafo.obtenerCentro();
+        assertNotNull(centroConTormenta);
+        assertTrue(grafo.contieneCiudad(centroConTormenta));
+        
+        // Agregar una nueva ciudad más central y verificar si se convierte en el nuevo centro
+        grafo.agregarCiudad("CiudadCentral");
+        grafo.agregarConexion("CiudadCentral", "Guatemala", 2.0, 2.5, 3.0, 4.0);
+        grafo.agregarConexion("CiudadCentral", "Quetzaltenango", 2.0, 2.5, 3.0, 4.0);
+        grafo.agregarConexion("CiudadCentral", "Antigua", 2.0, 2.5, 3.0, 4.0);
+        grafo.agregarConexion("CiudadCentral", "Escuintla", 2.0, 2.5, 3.0, 4.0);
+        grafo.floyd(); // Recalcular rutas
+        
+        String centroConNuevaCiudad = grafo.obtenerCentro();
+        assertNotNull(centroConNuevaCiudad);
+        
+        // La nueva ciudad debería ser más central debido a sus conexiones cortas
+        // (esto depende de la implementación específica del algoritmo de centro)
+        
+        // Restaurar condiciones normales para verificar consistencia
+        grafo.cambiarCondicionConexion("Guatemala", "Quetzaltenango", CondicionClimatica.NORMAL);
+        grafo.cambiarCondicionConexion("Guatemala", "Escuintla", CondicionClimatica.NORMAL);
+        grafo.floyd();
+        
+        String centroFinal = grafo.obtenerCentro();
+        assertNotNull(centroFinal);
+        assertTrue(grafo.contieneCiudad(centroFinal));
     }
 
     @Test

@@ -8,7 +8,7 @@
  * File Name: Grafo.java
  * Descripción: Clase que representa un grafo dirigido con pesos, implementando el algoritmo de Floyd-Warshall para encontrar caminos más cortos entre todas las ciudades.
  *              Esta clase permite agregar ciudades, conexiones entre ellas, eliminar conexiones, calcular rutas más cortas y encontrar el centro del grafo.
- *              Ahora soporta diferentes pesos según condiciones climáticas (normal, lluvia, nieve, tormenta).
+ *              Ahora soporta diferentes pesos según condiciones climáticas por conexión específica.
  */
 
 package com.hdt10;
@@ -24,13 +24,16 @@ public class Grafo {
     private final Map<String, Integer> ciudades = new HashMap<>();
     private final List<String> nombresCiudades = new ArrayList<>();
     
-    // Matrices para cada condición climática
+    // Matrices para cada condición climática (valores base)
     private double[][] matrizNormal;
     private double[][] matrizLluvia;
     private double[][] matrizNieve;
     private double[][] matrizTormenta;
     
-    private double[][] matrizActual; // Matriz que se usa para los cálculos actuales
+    // Matriz actual de trabajo y mapa de condiciones por conexión
+    private double[][] matrizActual;
+    private Map<String, CondicionClimatica> condicionesPorConexion = new HashMap<>();
+    
     private int[][] next;
     private final static double INF = Double.POSITIVE_INFINITY;
     
@@ -40,8 +43,6 @@ public class Grafo {
     public enum CondicionClimatica {
         NORMAL, LLUVIA, NIEVE, TORMENTA
     }
-    
-    private CondicionClimatica condicionActual = CondicionClimatica.NORMAL;
 
     /**
      * Constructor del grafo.
@@ -54,6 +55,7 @@ public class Grafo {
         matrizLluvia = new double[capacidadInicial][capacidadInicial];
         matrizNieve = new double[capacidadInicial][capacidadInicial];
         matrizTormenta = new double[capacidadInicial][capacidadInicial];
+        matrizActual = new double[capacidadInicial][capacidadInicial];
         next = new int[capacidadInicial][capacidadInicial];
         
         // Inicializar todas las matrices con infinito
@@ -61,13 +63,11 @@ public class Grafo {
         for (double[] fila : matrizLluvia) Arrays.fill(fila, INF);
         for (double[] fila : matrizNieve) Arrays.fill(fila, INF);
         for (double[] fila : matrizTormenta) Arrays.fill(fila, INF);
+        for (double[] fila : matrizActual) Arrays.fill(fila, INF);
         
         // Inicializar next con -1
         for (int i = 0; i < capacidadInicial; i++)
             Arrays.fill(next[i], -1);
-        
-        // Por defecto, trabajamos con la matriz normal
-        matrizActual = matrizNormal;
     }
 
     /**
@@ -93,11 +93,12 @@ public class Grafo {
      * 
      * @param nuevaCapacidad Nueva capacidad deseada.
      */
-    private void redimensionarMatrices(int nuevaCapacidad)   {
+    private void redimensionarMatrices(int nuevaCapacidad) {
         double[][] nuevaMatrizNormal = new double[nuevaCapacidad][nuevaCapacidad];
         double[][] nuevaMatrizLluvia = new double[nuevaCapacidad][nuevaCapacidad];
         double[][] nuevaMatrizNieve = new double[nuevaCapacidad][nuevaCapacidad];
         double[][] nuevaMatrizTormenta = new double[nuevaCapacidad][nuevaCapacidad];
+        double[][] nuevaMatrizActual = new double[nuevaCapacidad][nuevaCapacidad];
         int[][] nuevoNext = new int[nuevaCapacidad][nuevaCapacidad];
         
         // Inicializar todas las matrices nuevas con infinito
@@ -105,6 +106,7 @@ public class Grafo {
         for (double[] fila : nuevaMatrizLluvia) Arrays.fill(fila, INF);
         for (double[] fila : nuevaMatrizNieve) Arrays.fill(fila, INF);
         for (double[] fila : nuevaMatrizTormenta) Arrays.fill(fila, INF);
+        for (double[] fila : nuevaMatrizActual) Arrays.fill(fila, INF);
         
         // Inicializar next con -1
         for (int i = 0; i < nuevaCapacidad; i++)
@@ -118,6 +120,7 @@ public class Grafo {
                 nuevaMatrizLluvia[i][j] = matrizLluvia[i][j];
                 nuevaMatrizNieve[i][j] = matrizNieve[i][j];
                 nuevaMatrizTormenta[i][j] = matrizTormenta[i][j];
+                nuevaMatrizActual[i][j] = matrizActual[i][j];
                 nuevoNext[i][j] = next[i][j];
             }
         }
@@ -127,19 +130,13 @@ public class Grafo {
         matrizLluvia = nuevaMatrizLluvia;
         matrizNieve = nuevaMatrizNieve;
         matrizTormenta = nuevaMatrizTormenta;
+        matrizActual = nuevaMatrizActual;
         next = nuevoNext;
-        
-        // Actualizar la matriz actual
-        switch (condicionActual) {
-            case NORMAL: matrizActual = matrizNormal; break;
-            case LLUVIA: matrizActual = matrizLluvia; break;
-            case NIEVE: matrizActual = matrizNieve; break;
-            case TORMENTA: matrizActual = matrizTormenta; break;
-        }
     }
 
     /**
      * Agrega una conexión entre dos ciudades con diferentes tiempos según condiciones climáticas.
+     * Por defecto, la conexión inicia con condición NORMAL.
      * 
      * @param ciudad1 Ciudad origen.
      * @param ciudad2 Ciudad destino.
@@ -160,7 +157,11 @@ public class Grafo {
         matrizNieve[i][j] = tiempoNieve;
         matrizTormenta[i][j] = tiempoTormenta;
         
-        // Actualizar next para todas las condiciones
+        // Por defecto, la conexión inicia en condición NORMAL
+        String claveConexion = ciudad1 + "->" + ciudad2;
+        condicionesPorConexion.put(claveConexion, CondicionClimatica.NORMAL);
+        matrizActual[i][j] = tiempoNormal;
+        
         next[i][j] = j;
     }
 
@@ -178,26 +179,68 @@ public class Grafo {
         matrizLluvia[i][j] = INF;
         matrizNieve[i][j] = INF;
         matrizTormenta[i][j] = INF;
+        matrizActual[i][j] = INF;
+        
+        // Remover de las condiciones
+        String claveConexion = ciudad1 + "->" + ciudad2;
+        condicionesPorConexion.remove(claveConexion);
         
         next[i][j] = -1;
     }
     
     /**
-     * Cambia la condición climática actual y recalcula las rutas.
+     * Cambia la condición climática de una conexión específica.
      * 
+     * @param ciudad1 Ciudad origen.
+     * @param ciudad2 Ciudad destino.
      * @param condicion Nueva condición climática.
+     * @return true si se cambió exitosamente, false si la conexión no existe.
      */
-    public void cambiarCondicionClimatica(CondicionClimatica condicion) {
-        this.condicionActual = condicion;
-        switch (condicion) {
-            case NORMAL: matrizActual = matrizNormal; break;
-            case LLUVIA: matrizActual = matrizLluvia; break;
-            case NIEVE: matrizActual = matrizNieve; break;
-            case TORMENTA: matrizActual = matrizTormenta; break;
+    public boolean cambiarCondicionConexion(String ciudad1, String ciudad2, CondicionClimatica condicion) {
+        if (!ciudades.containsKey(ciudad1) || !ciudades.containsKey(ciudad2)) {
+            return false;
         }
         
-        // Recalcular Floyd-Warshall con la nueva matriz
-        floyd();
+        int i = ciudades.get(ciudad1);
+        int j = ciudades.get(ciudad2);
+        
+        // Verificar que la conexión existe
+        if (matrizNormal[i][j] == INF) {
+            return false;
+        }
+        
+        String claveConexion = ciudad1 + "->" + ciudad2;
+        condicionesPorConexion.put(claveConexion, condicion);
+        
+        // Actualizar la matriz actual con el tiempo correspondiente
+        switch (condicion) {
+            case NORMAL:
+                matrizActual[i][j] = matrizNormal[i][j];
+                break;
+            case LLUVIA:
+                matrizActual[i][j] = matrizLluvia[i][j];
+                break;
+            case NIEVE:
+                matrizActual[i][j] = matrizNieve[i][j];
+                break;
+            case TORMENTA:
+                matrizActual[i][j] = matrizTormenta[i][j];
+                break;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Obtiene la condición climática actual de una conexión específica.
+     * 
+     * @param ciudad1 Ciudad origen.
+     * @param ciudad2 Ciudad destino.
+     * @return Condición climática de la conexión, o null si no existe.
+     */
+    public CondicionClimatica getCondicionConexion(String ciudad1, String ciudad2) {
+        String claveConexion = ciudad1 + "->" + ciudad2;
+        return condicionesPorConexion.get(claveConexion);
     }
 
     /**
@@ -283,10 +326,10 @@ public class Grafo {
     }
 
     /**
-     * Imprime la matriz de adyacencia actual según la condición climática.
+     * Imprime la matriz de adyacencia actual.
      */
     public void imprimirMatriz() {
-        System.out.println("Matriz de adyacencia (" + condicionActual + "):");
+        System.out.println("Matriz de adyacencia actual:");
         for (int i = 0; i < ciudades.size(); i++) {
             for (int j = 0; j < ciudades.size(); j++) {
                 double d = matrizActual[i][j];
@@ -316,11 +359,29 @@ public class Grafo {
     }
     
     /**
-     * Obtiene la condición climática actual.
+     * Verifica si existe una conexión directa entre dos ciudades.
      * 
-     * @return Condición climática actual.
+     * @param ciudad1 Ciudad origen.
+     * @param ciudad2 Ciudad destino.
+     * @return true si existe la conexión, false en caso contrario.
      */
-    public CondicionClimatica getCondicionActual() {
-        return condicionActual;
+    public boolean existeConexion(String ciudad1, String ciudad2) {
+        if (!ciudades.containsKey(ciudad1) || !ciudades.containsKey(ciudad2)) {
+            return false;
+        }
+        
+        int i = ciudades.get(ciudad1);
+        int j = ciudades.get(ciudad2);
+        
+        return matrizNormal[i][j] != INF;
+    }
+    
+    /**
+     * Obtiene todas las conexiones existentes con sus condiciones climáticas.
+     * 
+     * @return Mapa con las conexiones y sus condiciones climáticas.
+     */
+    public Map<String, CondicionClimatica> getTodasLasCondiciones() {
+        return new HashMap<>(condicionesPorConexion);
     }
 }
