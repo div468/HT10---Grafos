@@ -18,19 +18,40 @@ public class Ruta {
     private List<String> camino;
     private double tiempo;
     
+    /**
+     * Constructor de la clase Ruta.
+     * 
+     * @param camino Lista de ciudades que forman la ruta.
+     * @param tiempo Tiempo total de la ruta.
+     */
     public Ruta(List<String> camino, double tiempo) {
         this.camino = camino;
         this.tiempo = tiempo;
     }
     
+    /**
+     * Obtiene la lista de ciudades que forman la ruta.
+     * 
+     * @return Lista de ciudades.
+     */
     public List<String> getCamino() {
         return camino;
     }
     
+    /**
+     * Obtiene el tiempo total de la ruta.
+     * 
+     * @return Tiempo total.
+     */
     public double getTiempo() {
         return tiempo;
     }
     
+    /**
+     * Representación en String de la ruta.
+     * 
+     * @return String con el formato: "Ruta: ciudad1 -> ciudad2 -> ... -> ciudadN\nTiempo: XX.XX"
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

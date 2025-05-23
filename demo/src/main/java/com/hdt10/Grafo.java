@@ -34,12 +34,20 @@ public class Grafo {
     private int[][] next;
     private final static double INF = Double.POSITIVE_INFINITY;
     
+    /**
+     * Enumeración que representa las posibles condiciones climáticas que afectan los pesos de las conexiones.
+     */
     public enum CondicionClimatica {
         NORMAL, LLUVIA, NIEVE, TORMENTA
     }
     
     private CondicionClimatica condicionActual = CondicionClimatica.NORMAL;
 
+    /**
+     * Constructor del grafo.
+     * 
+     * @param capacidadInicial Capacidad inicial para las matrices de adyacencia.
+     */
     public Grafo(int capacidadInicial) {
         // Inicializar todas las matrices
         matrizNormal = new double[capacidadInicial][capacidadInicial];
@@ -62,6 +70,11 @@ public class Grafo {
         matrizActual = matrizNormal;
     }
 
+    /**
+     * Agrega una ciudad al grafo si no existe.
+     * 
+     * @param nombre Nombre de la ciudad a agregar.
+     */
     public void agregarCiudad(String nombre) {
         if (!ciudades.containsKey(nombre)) {
             int index = ciudades.size();
@@ -75,6 +88,11 @@ public class Grafo {
         }
     }
     
+    /**
+     * Redimensiona las matrices del grafo para aumentar su capacidad.
+     * 
+     * @param nuevaCapacidad Nueva capacidad deseada.
+     */
     private void redimensionarMatrices(int nuevaCapacidad) {
         double[][] nuevaMatrizNormal = new double[nuevaCapacidad][nuevaCapacidad];
         double[][] nuevaMatrizLluvia = new double[nuevaCapacidad][nuevaCapacidad];
@@ -120,6 +138,16 @@ public class Grafo {
         }
     }
 
+    /**
+     * Agrega una conexión entre dos ciudades con diferentes tiempos según condiciones climáticas.
+     * 
+     * @param ciudad1 Ciudad origen.
+     * @param ciudad2 Ciudad destino.
+     * @param tiempoNormal Tiempo en condiciones normales.
+     * @param tiempoLluvia Tiempo con lluvia.
+     * @param tiempoNieve Tiempo con nieve.
+     * @param tiempoTormenta Tiempo con tormenta.
+     */
     public void agregarConexion(String ciudad1, String ciudad2, double tiempoNormal, double tiempoLluvia, 
                                 double tiempoNieve, double tiempoTormenta) {
         agregarCiudad(ciudad1);
@@ -136,6 +164,12 @@ public class Grafo {
         next[i][j] = j;
     }
 
+    /**
+     * Elimina una conexión entre dos ciudades.
+     * 
+     * @param ciudad1 Ciudad origen.
+     * @param ciudad2 Ciudad destino.
+     */
     public void eliminarConexion(String ciudad1, String ciudad2) {
         int i = ciudades.get(ciudad1);
         int j = ciudades.get(ciudad2);
@@ -148,6 +182,11 @@ public class Grafo {
         next[i][j] = -1;
     }
     
+    /**
+     * Cambia la condición climática actual y recalcula las rutas.
+     * 
+     * @param condicion Nueva condición climática.
+     */
     public void cambiarCondicionClimatica(CondicionClimatica condicion) {
         this.condicionActual = condicion;
         switch (condicion) {
@@ -161,6 +200,9 @@ public class Grafo {
         floyd();
     }
 
+    /**
+     * Ejecuta el algoritmo de Floyd-Warshall para calcular las rutas más cortas.
+     */
     public void floyd() {
         int n = ciudades.size();
         
@@ -185,6 +227,13 @@ public class Grafo {
                     }
     }
 
+    /**
+     * Obtiene la ruta más corta entre dos ciudades.
+     * 
+     * @param origen Ciudad origen.
+     * @param destino Ciudad destino.
+     * @return Objeto Ruta con el camino y tiempo, o null si no hay ruta.
+     */
     public Ruta obtenerRuta(String origen, String destino) {
         if (!ciudades.containsKey(origen) || !ciudades.containsKey(destino)) {
             return null;
@@ -204,6 +253,11 @@ public class Grafo {
         return new Ruta(camino, matrizActual[i][j]);
     }
 
+    /**
+     * Calcula la ciudad que está en el centro del grafo (menor excentricidad máxima).
+     * 
+     * @return Nombre de la ciudad centro, o mensaje de error si no se puede determinar.
+     */
     public String obtenerCentro() {
         int centro = -1;
         double menorExcentricidad = INF;
@@ -224,6 +278,9 @@ public class Grafo {
         return nombresCiudades.get(centro);
     }
 
+    /**
+     * Imprime la matriz de adyacencia actual según la condición climática.
+     */
     public void imprimirMatriz() {
         System.out.println("Matriz de adyacencia (" + condicionActual + "):");
         for (int i = 0; i < ciudades.size(); i++) {
@@ -235,14 +292,30 @@ public class Grafo {
         }
     }
 
+    /**
+     * Verifica si una ciudad existe en el grafo.
+     * 
+     * @param ciudad Nombre de la ciudad.
+     * @return true si existe, false en caso contrario.
+     */
     public boolean contieneCiudad(String ciudad) {
         return ciudades.containsKey(ciudad);
     }
 
+    /**
+     * Obtiene el conjunto de ciudades en el grafo.
+     * 
+     * @return Conjunto de nombres de ciudades.
+     */
     public Set<String> getCiudades() {
         return ciudades.keySet();
     }
     
+    /**
+     * Obtiene la condición climática actual.
+     * 
+     * @return Condición climática actual.
+     */
     public CondicionClimatica getCondicionActual() {
         return condicionActual;
     }

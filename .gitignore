@@ -1,0 +1,24 @@
+# Configuración de VS Code
+.vscode/
+
+# Archivos compilados de Java
+*.class
+
+# Archivos generados por IDEs
+*.iml
+*.ipr
+*.iws
+.idea/
+bin/
+out/
+target/
+
+# Archivos temporales
+*.log
+*.tmp
+*.swp
+*.bak
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db

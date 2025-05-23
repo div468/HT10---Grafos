@@ -19,6 +19,11 @@ public class Main {
     private static Scanner scanner = new Scanner(System.in);
     private static Grafo grafo;
     
+    /**
+     * Método principal que inicia la aplicación.
+     * 
+     * @param args Argumentos de la línea de comandos (no utilizados).
+     */
     public static void main(String[] args) {
         System.out.println("----- Sistema de Rutas entre Ciudades -----");
         
@@ -61,6 +66,9 @@ public class Main {
         }
     }
     
+    /**
+     * Muestra el menú principal y gestiona las opciones del usuario.
+     */
     private static void menuPrincipal() {
         int opcion;
         
@@ -98,6 +106,9 @@ public class Main {
         } while (opcion != 4);
     }
     
+    /**
+     * Consulta y muestra la ruta entre dos ciudades.
+     */
     private static void consultarRuta() {
         System.out.println("\n----- Consulta de Ruta -----");
         
@@ -130,6 +141,9 @@ public class Main {
         }
     }
     
+    /**
+     * Consulta y muestra el centro del grafo.
+     */
     private static void consultarCentro() {
         System.out.println("\n----- Centro del Grafo -----");
         
@@ -137,6 +151,9 @@ public class Main {
         System.out.println("La ciudad que se encuentra en el centro del grafo es: " + centro);
     }
     
+    /**
+     * Muestra el menú de modificación del grafo.
+     */
     private static void modificarGrafo() {
         int opcion;
         
@@ -174,6 +191,9 @@ public class Main {
         } while (opcion != 4);
     }
     
+    /**
+     * Elimina una conexión entre dos ciudades.
+     */
     private static void eliminarConexion() {
         System.out.println("\n------ Eliminar Conexión -----");
         
@@ -209,6 +229,9 @@ public class Main {
         System.out.println("Nuevo centro del grafo: " + grafo.obtenerCentro());
     }
     
+    /**
+     * Establece una nueva conexión entre dos ciudades.
+     */
     private static void establecerConexion() {
         System.out.println("\n----- Establecer Conexión -----");
         
@@ -252,6 +275,9 @@ public class Main {
         }
     }
     
+    /**
+     * Cambia la condición climática actual.
+     */
     private static void cambiarClima() {
         System.out.println("\n----- Cambiar Condición Climática -----");
         System.out.println("Condición climática actual: " + grafo.getCondicionActual());
@@ -297,6 +323,9 @@ public class Main {
         }
     }
     
+    /**
+     * Muestra las ciudades disponibles en el grafo.
+     */
     private static void mostrarCiudadesDisponibles() {
         Set<String> ciudades = grafo.getCiudades();
         System.out.println("Ciudades disponibles: " + String.join(", ", ciudades));
